@@ -25,7 +25,7 @@ public class CubeManager : MonoBehaviour
             for (int z = 0; z < height; z++)
             {
                 CubePrefab.name = "Cube " + (x * width + z);
-                GameObject cube = Instantiate(CubePrefab, new Vector3(x, 0, z), Quaternion.identity);
+                GameObject cube = Instantiate(CubePrefab, new Vector3(x * 1.1f, 0, z * 1.1f), Quaternion.identity);
             }
         }
     }

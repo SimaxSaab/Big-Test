@@ -10,6 +10,7 @@ public class CubeManager : MonoBehaviour
 {
     public Button _play;
     public Button _playCubesCombination;
+    public Button _playGenerateWalls;
 
     public GameObject CubePrefab;
     public GameObject GreenCubePrefab;
@@ -18,11 +19,77 @@ public class CubeManager : MonoBehaviour
 
     public int width = 10;
     public int height = 10;
+    public float emptyCellProbability = 0.05f;
+    public float adjacentWallProbability = 0.25f;
+    public GameObject[,] walls;
     // Start is called before the first frame update
     void Start()
     {
         _play.onClick.AddListener(() => { ClickPlay(1); });
         _playCubesCombination.onClick.AddListener(() => { ClickPlay(2); });
+        _playGenerateWalls.onClick.AddListener(GenerateWalls);
+    }
+
+    void InitializeWalls()
+    {
+        walls = new GameObject[width, height];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                walls[x, y] = null;
+            }
+        }
+    }
+
+    void GenerateWalls()
+    {
+        InitializeWalls();
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                bool hasAdjacentWall = false;
+
+                for (int cx = -1; cx <= 1; cx++)
+                {
+                    for (int cy = -1; cy <= 1; cy++)
+                    {
+                        if (cx == 0 && cy == 0)
+                        {
+                            continue;
+                        }
+
+                        int checkX = x + cx;
+                        int checkY = z + cy;
+
+                        if (checkX < 0 || checkX >= width || checkY < 0 || checkY >= height)
+                        {
+                            continue;
+                        }
+
+                        if (walls[checkX, checkY] != null)
+                        {
+                            hasAdjacentWall = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasAdjacentWall)  
+                {
+                    if (Random.value < adjacentWallProbability)
+                    {
+                        GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
+                        walls[x, z] = wall;
+                    }
+                } else if (Random.value < emptyCellProbability)
+                {
+                    GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
+                    walls[x, z] = wall;
+                }
+            }
+        }
     }
 
     void ClickPlay(int flag)

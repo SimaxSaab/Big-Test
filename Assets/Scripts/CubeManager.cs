@@ -16,7 +16,7 @@ public class CubeManager : MonoBehaviour
     public GameObject CubePrefab;
     public GameObject GreenCubePrefab;
     public GameObject YellowCubePrefab;
-    public List<GameObject> cubes;
+    public GameObject[] cubes;
 
     public int width = 10;
     public int height = 10;
@@ -47,19 +47,16 @@ public class CubeManager : MonoBehaviour
     {
         if (walls != null)
         {
-            for (int x = 0; x < width; x++)
+            foreach (GameObject cube in walls)
             {
-                for (int y = 0; y < height; y++)
-                {
-                    if (walls[x, y] != null)
-                    {
-                        Destroy(walls[x, y]);
-                    }
-                }
+                Destroy(cube);
             }
         }
         
         InitializeWalls();
+
+        int i = 0;
+
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
@@ -96,11 +93,13 @@ public class CubeManager : MonoBehaviour
                 {
                     if (randomValue < adjacentWallProbability)
                     {
+                        CubePrefab.name = "Wall from Cubes " + (i++);
                         GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
                         walls[x, z] = wall;
                     }
                 } else if (randomValue < emptyCellProbability)
                 {
+                    CubePrefab.name = "Wall from Cubes " + (i++);
                     GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
                     walls[x, z] = wall;
                 }
@@ -110,13 +109,17 @@ public class CubeManager : MonoBehaviour
 
     void GenerateMap(bool useDifferentBinomes = false)
     {
-        if (cubes != null && cubes.Count > 0)
+        if (cubes != null && cubes.Length > 0)
         {
             foreach (GameObject cube in cubes)
             {
                 Destroy(cube);
             }
         }
+
+        cubes = new GameObject[width * height];
+
+        int i = 0;
 
         for (int x = 0; x < width; x++)
         {
@@ -137,10 +140,9 @@ public class CubeManager : MonoBehaviour
                         CubeInst = YellowCubePrefab;
                     }
                 }
-                CubeInst.name = "Cube" + (x * width + z);
-                CubeInst.tag = "Cube";
+                CubeInst.name = "Cube " + (i);
                 GameObject cube = Instantiate(CubeInst, new Vector3(x * 1.1f, 0, z * 1.1f), Quaternion.identity);
-                cubes.Add(cube);
+                cubes[i++] = cube;
             }
         }
     }

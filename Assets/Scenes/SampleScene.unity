@@ -384,7 +384,6 @@ GameObject:
   - component: {fileID: 835228523}
   - component: {fileID: 835228522}
   - component: {fileID: 835228521}
-  - component: {fileID: 835228524}
   m_Layer: 5
   m_Name: Play
   m_TagString: Untagged
@@ -494,29 +493,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835228518}
   m_CullTransparentMesh: 1
---- !u!114 &835228524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 835228518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8ae08db3892f6540b1460b973b1e1ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _play: {fileID: 835228521}
-  _playCubesCombination: {fileID: 0}
-  _playGenerateWalls: {fileID: 0}
-  CubePrefab: {fileID: 8958713875916976309, guid: 7a72f4be935f271429626e6289cf2201, type: 3}
-  GreenCubePrefab: {fileID: 0}
-  YellowCubePrefab: {fileID: 0}
-  cubes: []
-  width: 10
-  height: 10
-  emptyCellProbability: 0.05
-  adjacentWallProbability: 0.25
 --- !u!1 &866410313
 GameObject:
   m_ObjectHideFlags: 0

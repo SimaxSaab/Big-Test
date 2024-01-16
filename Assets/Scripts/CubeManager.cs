@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ public class CubeManager : MonoBehaviour
     public GameObject CubePrefab;
     public GameObject GreenCubePrefab;
     public GameObject YellowCubePrefab;
-    public GameObject[] cubes;
+    public List<GameObject> cubes;
 
     public int width = 10;
     public int height = 10;
@@ -25,8 +26,8 @@ public class CubeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _play.onClick.AddListener(() => { ClickPlay(1); });
-        _playCubesCombination.onClick.AddListener(() => { ClickPlay(2); });
+        _play.onClick.AddListener(() => { GenerateMap(false); });
+        _playCubesCombination.onClick.AddListener(() => { GenerateMap(true); });
         _playGenerateWalls.onClick.AddListener(GenerateWalls);
     }
 
@@ -44,6 +45,20 @@ public class CubeManager : MonoBehaviour
 
     void GenerateWalls()
     {
+        if (walls != null)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (walls[x, y] != null)
+                    {
+                        Destroy(walls[x, y]);
+                    }
+                }
+            }
+        }
+        
         InitializeWalls();
         for (int x = 0; x < width; x++)
         {
@@ -76,14 +91,15 @@ public class CubeManager : MonoBehaviour
                     }
                 }
 
+                float randomValue = UnityEngine.Random.value;
                 if (hasAdjacentWall)  
                 {
-                    if (Random.value < adjacentWallProbability)
+                    if (randomValue < adjacentWallProbability)
                     {
                         GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
                         walls[x, z] = wall;
                     }
-                } else if (Random.value < emptyCellProbability)
+                } else if (randomValue < emptyCellProbability)
                 {
                     GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
                     walls[x, z] = wall;
@@ -92,9 +108,9 @@ public class CubeManager : MonoBehaviour
         }
     }
 
-    void ClickPlay(int flag)
+    void GenerateMap(bool useDifferentBinomes = false)
     {
-        if (cubes.Length > 0)
+        if (cubes != null && cubes.Count > 0)
         {
             foreach (GameObject cube in cubes)
             {
@@ -108,9 +124,9 @@ public class CubeManager : MonoBehaviour
             {
                 GameObject CubeInst = CubePrefab;
 
-                if (flag == 2)
+                if (useDifferentBinomes)
                 {
-                    float randomValue = Random.value;
+                    float randomValue = UnityEngine.Random.value;
 
                     if (randomValue <= 0.7f)
                     {
@@ -124,9 +140,9 @@ public class CubeManager : MonoBehaviour
                 CubeInst.name = "Cube" + (x * width + z);
                 CubeInst.tag = "Cube";
                 GameObject cube = Instantiate(CubeInst, new Vector3(x * 1.1f, 0, z * 1.1f), Quaternion.identity);
+                cubes.Add(cube);
             }
         }
-        cubes = GameObject.FindGameObjectsWithTag("Cube");
     }
 
     // Update is called once per frame

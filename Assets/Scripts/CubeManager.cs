@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,23 +12,48 @@ public class CubeManager : MonoBehaviour
     public Button _play;
     public Button _playCubesCombination;
     public Button _playGenerateWalls;
+    public Button _personageSpawn;
 
     public GameObject CubePrefab;
     public GameObject GreenCubePrefab;
     public GameObject YellowCubePrefab;
+    public GameObject PersonageCapsulePrefab;
     public GameObject[] cubes;
+    public GameObject capsule;
 
     public int width = 10;
     public int height = 10;
     public float emptyCellProbability = 0.05f;
     public float adjacentWallProbability = 0.25f;
     public GameObject[,] walls;
+
+    private int capsuleX = -1;
+    private int capsuleZ = -1;
     // Start is called before the first frame update
     void Start()
     {
         _play.onClick.AddListener(() => { GenerateMap(false); });
         _playCubesCombination.onClick.AddListener(() => { GenerateMap(true); });
         _playGenerateWalls.onClick.AddListener(GenerateWalls);
+        _personageSpawn.onClick.AddListener(GeneratePersonageSpawn);
+    }
+
+    void GeneratePersonageSpawn()
+    {
+        if (capsule != null)
+        {
+            Destroy(capsule);
+        }
+        capsuleX = UnityEngine.Random.Range(0, width);
+        capsuleZ = UnityEngine.Random.Range(0, height);
+        if (walls == null || 
+            walls[capsuleX, capsuleZ] == null)
+        {
+            PersonageCapsulePrefab.name = "Capsule";
+            capsule = Instantiate(PersonageCapsulePrefab, new Vector3(capsuleX * 1.1f, 1.5f, capsuleZ * 1.1f), Quaternion.identity);
+        } else {
+            GeneratePersonageSpawn();
+        }
     }
 
     void InitializeWalls()
@@ -61,6 +86,7 @@ public class CubeManager : MonoBehaviour
         {
             for (int z = 0; z < height; z++)
             {
+                if (capsuleZ == z || capsuleX == x) continue;
                 bool hasAdjacentWall = false;
 
                 for (int cx = -1; cx <= 1; cx++)

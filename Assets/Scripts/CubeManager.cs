@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Xml.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,13 +20,16 @@ public class CubeManager : MonoBehaviour
     public GameObject YellowCubePrefab;
     public GameObject PersonageCapsulePrefab;
     public GameObject[] cubes;
+    public GameObject[,] walls;
     public GameObject capsule;
 
     public int width = 10;
     public int height = 10;
     public float emptyCellProbability = 0.05f;
     public float adjacentWallProbability = 0.25f;
-    public GameObject[,] walls;
+
+    public float grassSpeed = 1f;
+    public float sandSpeed = 0.5f; 
 
     private int capsuleX = -1;
     private int capsuleZ = -1;
@@ -51,6 +55,7 @@ public class CubeManager : MonoBehaviour
         {
             PersonageCapsulePrefab.name = "Capsule";
             capsule = Instantiate(PersonageCapsulePrefab, new Vector3(capsuleX * 1.1f, 1.5f, capsuleZ * 1.1f), Quaternion.identity);
+            capsule.AddComponent<Mover>();
         } else {
             GeneratePersonageSpawn();
         }
@@ -80,7 +85,7 @@ public class CubeManager : MonoBehaviour
         
         InitializeWalls();
 
-        int i = 0;
+        //int i = 0;
 
         for (int x = 0; x < width; x++)
         {
@@ -119,13 +124,13 @@ public class CubeManager : MonoBehaviour
                 {
                     if (randomValue < adjacentWallProbability)
                     {
-                        CubePrefab.name = "Wall from Cubes " + (i++);
+                        CubePrefab.name = "Wall";
                         GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
                         walls[x, z] = wall;
                     }
                 } else if (randomValue < emptyCellProbability)
                 {
-                    CubePrefab.name = "Wall from Cubes " + (i++);
+                    CubePrefab.name = "Wall";
                     GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
                     walls[x, z] = wall;
                 }
@@ -167,6 +172,7 @@ public class CubeManager : MonoBehaviour
                     }
                 }
                 CubeInst.name = "Cube " + (i);
+                CubeInst.tag = "Terra";
                 GameObject cube = Instantiate(CubeInst, new Vector3(x * 1.1f, 0, z * 1.1f), Quaternion.identity);
                 cubes[i++] = cube;
             }
@@ -174,8 +180,33 @@ public class CubeManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
-        
-    }
+        if (Input.GetMouseButtonDown(0)) // При клике левой кнопкой мыши
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                // Проверяем, что кликнули на ландшафт
+                if (hit.collider.CompareTag("Terra"))
+                {
+                    // Получаем точку, на которую кликнули
+                    Vector3 targetPoint = hit.point;
+
+                    // Вычисляем расстояние до точки
+                    float distance = Vector3.Distance(transform.position, targetPoint);
+
+                    // Выбираем скорость в зависимости от типа поверхности (трава или песок)
+                    //float speed = hit.collider.CompareTag("Grass") ? grassSpeed : sandSpeed;
+                    float speed = 1f; 
+
+                    // Перемещаем персонажа к точке
+                    transform.position = Vector3.MoveTowards(transform.position, targetPoint, speed * Time.deltaTime);
+                }
+            }
+        }
+    }*/
 }
+

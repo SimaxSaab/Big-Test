@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Cube
   - Cube(Clone)
+  - Terra
   layers:
   - Default
   - TransparentFX

@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml.Linq;
 using TMPro;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class CubeManager : MonoBehaviour
@@ -23,6 +25,8 @@ public class CubeManager : MonoBehaviour
     public GameObject[,] walls;
     public GameObject capsule;
 
+    public GameObject navMeshSurface;
+
     public int width = 10;
     public int height = 10;
     public float emptyCellProbability = 0.05f;
@@ -36,6 +40,7 @@ public class CubeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log(navMeshSurface);
         _play.onClick.AddListener(() => { GenerateMap(false); });
         _playCubesCombination.onClick.AddListener(() => { GenerateMap(true); });
         _playGenerateWalls.onClick.AddListener(GenerateWalls);
@@ -126,12 +131,18 @@ public class CubeManager : MonoBehaviour
                     {
                         CubePrefab.name = "Wall";
                         GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
+                        wall.AddComponent<BoxCollider>();
+                        wall.AddComponent<NavMeshObstacle>();
+                        wall.GetComponent<NavMeshObstacle>().carving = true;
                         walls[x, z] = wall;
                     }
                 } else if (randomValue < emptyCellProbability)
                 {
                     CubePrefab.name = "Wall";
                     GameObject wall = Instantiate(CubePrefab, new Vector3(x * 1.1f, 1.1f, z * 1.1f), Quaternion.identity);
+                    wall.AddComponent<BoxCollider>();
+                    wall.AddComponent<NavMeshObstacle>();
+                    wall.GetComponent<NavMeshObstacle>().carving = true;
                     walls[x, z] = wall;
                 }
             }
@@ -174,6 +185,15 @@ public class CubeManager : MonoBehaviour
                 CubeInst.name = "Cube " + (i);
                 CubeInst.tag = "Terra";
                 GameObject cube = Instantiate(CubeInst, new Vector3(x * 1.1f, 0, z * 1.1f), Quaternion.identity);
+                cube.transform.SetParent(navMeshSurface.transform);
+                if (CubeInst == GreenCubePrefab)
+                {
+                    cube.layer = LayerMask.NameToLayer("Grass");
+                } else
+                {
+                    cube.layer = LayerMask.NameToLayer("Sand");
+                }
+                
                 cubes[i++] = cube;
             }
         }

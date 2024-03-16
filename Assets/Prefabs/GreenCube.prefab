@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8152767303466717773}
   m_Layer: 0
   m_Name: GreenCube
-  m_TagString: Cube
+  m_TagString: Terra
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

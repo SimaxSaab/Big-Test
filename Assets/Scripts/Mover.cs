@@ -32,6 +32,7 @@ public class Mover : MonoBehaviour
         //_targetPoint = transform.position;
         navMeshSurface = GameObject.Find("NavMeshSurfaceManager");
         NavMeshSurface nMeshSurface = navMeshSurface.GetComponent<NavMeshSurface>();
+        
         nMeshSurface.collectObjects = CollectObjects.Children;
         nMeshSurface.BuildNavMesh();
         capsuleObject = GameObject.Find("Capsule(Clone)");
